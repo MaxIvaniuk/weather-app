@@ -1,0 +1,36 @@
+.currentWeather_container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.currentWeather_header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.currentWeather_headerTime {
+    font-size: 20px;
+}
+
+.currentWeather_temp {
+    font-size: 170px;
+    font-weight: bold;
+    color: var(--greenish);
+    margin-top: 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.currentWeather_temp > span {
+    font-size: 100px;
+}
+
+.currentWeather_condition {
+    color: var(--greenish);
+    font-size: 50px;
+    text-align: center;
+}

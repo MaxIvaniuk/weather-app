@@ -1,0 +1,58 @@
+.searchLocation {
+    position: relative;
+}
+
+.searchLocation_inputContainer {
+    position: relative;
+}
+
+.searchLocation_input {
+    text-decoration: none;
+    outline: none;
+    cursor: pointer;
+    box-shadow: none;
+    border: none;
+
+    position: relative;
+    border-bottom: 1px solid var(--greenish);
+    padding: 7px 30px;
+    padding-left: 35px;
+    background-color: var(--gray);
+    font-size: 18px;
+    font-family: var(--font-quicksand);
+}
+
+.searchInput_icon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+}
+
+.searchLocation_results {
+    position: absolute;
+    left: 0;
+    top: 45px;
+    list-style: none;
+    width: 300px;
+    height: 150px;
+    overflow: scroll;
+    background: var(--gray);
+    border: 1px solid var(--greenish);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.searchLocation_results li {
+    font-family: var(--font-quicksand);
+    padding: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0);
+}
+
+.searchLocation_results li:hover {
+    transition: background-color 0.3s;
+    background-color: var(--l-greenish);
+    border-radius: 5px;
+}
