@@ -1,32 +1,31 @@
 'use client'
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, ReactNode, useState } from 'react';
+import { LocationContextType } from '@/types/types';
 
-interface Location {
-  latitude: number | null;
-  longitude: number | null;
-}
+const weatherContextDefaultValues: LocationContextType = {
+  city: '',
+  coordinates: { latitude: null, longitude: null },
+  setCity: () => {},
+  setCoordinates: () => {}, 
+  clearLocation: () => {}
+};
 
-interface LocationContextProps {
-  location: Location;
-  setLocation: (location: Location) => void;
-}
+const LocationContext = createContext<LocationContextType>(weatherContextDefaultValues);
 
-const LocationContext = createContext<LocationContextProps | undefined>(undefined);
+export const LocationProvider: React.FC<{ children: ReactNode }>  = ({ children }) => {
+  const [city, setCity] = useState<string>('');
+  const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number } | undefined>(undefined);
 
-export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [location, setLocation] = useState<Location>({ latitude: null, longitude: null });
+  const clearLocation = () => {
+    setCity('');
+    setCoordinates(undefined);
+  };
 
   return (
-    <LocationContext.Provider value={{ location, setLocation }}>
+    <LocationContext.Provider value={{ city, coordinates, setCity, setCoordinates, clearLocation }}>
       {children}
     </LocationContext.Provider>
   );
 };
 
-export const useLocation = () => {
-  const context = useContext(LocationContext);
-  if (!context) {
-    throw new Error("useLocation must be used within a LocationProvider");
-  }
-  return context;
-};
+export const useLocation = () => useContext(LocationContext);

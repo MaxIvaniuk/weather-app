@@ -15,7 +15,6 @@ const HomePage: React.FC = () => {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
           });
-        //   router.push('/forecast');
         },
         (error) => {
           console.error("Не вдалося отримати геолокацію:", error.message);

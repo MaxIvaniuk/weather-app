@@ -6,7 +6,19 @@
     position: relative;
 }
 
-.searchLocation_input {
+.searchIcon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+}
+
+/* .searchLocation_inputContainer .react-select__container {
+    width: 300px;
+    background: #000;
+}
+.searchLocation_inputContainer .react-select__control {
+    width: 300px;
     text-decoration: none;
     outline: none;
     cursor: pointer;
@@ -22,12 +34,7 @@
     font-family: var(--font-quicksand);
 }
 
-.searchInput_icon {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
-}
+
 
 .searchLocation_results {
     position: absolute;
@@ -55,4 +62,4 @@
     transition: background-color 0.3s;
     background-color: var(--l-greenish);
     border-radius: 5px;
-}
+} */

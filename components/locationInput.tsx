@@ -1,118 +1,83 @@
-import { useState, useEffect } from 'react';
-import { fetchLocation } from '@/lib/weatherService';
-import styles from './locationInput.module.css';
 import Image from 'next/image';
+import AsyncSelect from 'react-select/async';
+import { StylesConfig } from 'react-select';
 
-interface City {
-  id: string;
-  name: string;
-  country: string;
-}
+import { fetchLocation } from '@/lib/weatherService';
+import { useLocation } from '@/context/LocationContext';
+import { TCity, SelectedCity } from '@/types/types'
+import styles from './locationInput.module.css';
 
-interface CitySearchInputProps {
-  onSelectCity: (city: City) => void;
-}
+const CitySearchInput: React.FC = () => {
 
-interface CityResultListProps {
-  isLoading: boolean;
-  results: City[];
-  onCitySelect: (city: City) => void;
-}
+  const { city, clearLocation, setCity } = useLocation(); //global context
 
-const CityResultList: React.FC<CityResultListProps> = ({ isLoading, results, onCitySelect }) => {
-  return (
-    <ul className={styles.searchLocation_results}>
-      {results.map((city) => (
-        <li key={city.id} onClick={() => onCitySelect(city)}>
-          {city.name}, {city.country}
-        </li>
-      ))}
-      {isLoading && <li>Loading...</li>}
-    </ul>
-  );
-};
+  const customComponents = {
+    DropdownIndicator: () => null,
+    IndicatorSeparator: () => null,
+  };
 
-const CitySearchInput: React.FC<CitySearchInputProps> = ({ onSelectCity }) => {
-  const [query, setQuery] = useState('');
-  const [suggestions, setSuggestions] = useState<City[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showSuggestions, setShowSuggestions] = useState(false);
+  const onSelectHandler = (value: SelectedCity) => {
+    setCity(value.label)
+  }
 
-  useEffect(() => {
-    if (query.length < 3) {
-      setSuggestions([]);
-      setShowSuggestions(false);
-      return;
-    }
-
-    const fetchCities = async () => {
-      setIsLoading(true);
-      try {
-        const data = await fetchLocation(query);
-        const cities = data.map((city: any) => ({
-          id: city.id,
-          name: city.name,
-          country: city.country,
-        }));
-        setSuggestions(cities);
-        setShowSuggestions(true);
-      } catch (error) {
-        console.error("Error with fetching cities:", error);
-      } finally {
-        setIsLoading(false);
+  const customStyles: StylesConfig<TCity, false> = {
+    control: (provided) => ({
+      ...provided,
+      textDecoration: 'none',
+      textAlign: 'left',
+      outline: 'none',
+      cursor: 'pointer',
+      boxShadow: 'none',
+      border: 'none',
+      borderBottom: '1px solid var(--greenish)',
+      padding: '7px',
+      paddingLeft: '25px', 
+      paddingRight: '0px',
+      width: '350px'
+    }),
+    menu: (provided) => ({
+      ...provided,
+      textAlign: 'left',
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      opacity: 0.5
+    }),
+    option: (provided) => ({
+      ...provided,
+      ":hover": { 
+        background: "var(--gray)" 
       }
-    };
+    })
+}
 
-    const timeoutId = setTimeout(fetchCities, 300);
-    return () => clearTimeout(timeoutId);
-  }, [query]);
-
-  const handleSelect = (city: City) => {
-    setQuery(city.name);
-    setSuggestions([]);
-    setShowSuggestions(false);
-    onSelectCity(city);
+  const citySearchApiCall = async (inputValue: string): Promise<TCity[]> => {
+    return fetchLocation(inputValue)
   };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setQuery(value);
-    if (value === '' || value.length <= 2) {
-      setSuggestions([]);
-      setShowSuggestions(false);
-    } else {
-      setShowSuggestions(true);
-    }
-  };
-
+  
   return (
     <div className={styles.searchLocation}>
       <div className={styles.searchLocation_inputContainer}>
-        <input
-          id="locationInput"
-          className={styles.searchLocation_input}
-          type="text"
-          value={query}
-          onChange={handleInputChange}
+        <AsyncSelect 
+          loadOptions={citySearchApiCall}
+          styles={customStyles}
+          cacheOptions
+          isClearable
+          components={customComponents}
           placeholder="Enter your city"
+          onChange={value => onSelectHandler(value)}
+          // onInputChange={clearLocation}
         />
-        <label htmlFor="locationInput" className={styles.searchInput_icon}>
-          <Image
+        <Image
             src="/search-line-icon.svg"
             width={15}
             height={15}
             alt="search"
-          />
-        </label>
+            className={styles.searchIcon}
+        />
       </div>
 
-      {showSuggestions && (
-        <CityResultList
-          isLoading={isLoading}
-          results={suggestions}
-          onCitySelect={handleSelect}
-        />
-      )}
+
     </div>
   );
 };
