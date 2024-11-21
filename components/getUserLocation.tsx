@@ -30,7 +30,6 @@ const GetUserLocation: React.FC<GetUserLocationProps> = () => {
     try {
       const data = await fetchWeatherByCity(city);
       console.log(data)
-    //   onWeatherData(data);
     } catch (err) {
       setError('Не вдалося завантажити погоду для вибраного міста.');
     } finally {
@@ -74,13 +73,14 @@ const GetUserLocation: React.FC<GetUserLocationProps> = () => {
     <div className={styles.getLocation_wrapper}>
       <div className={styles.getLocation_text}>
           <h1>Welcome to simple weather app!</h1>
+          {!city && 
           <p>Please   
             <button onClick={handleGetLocation}>enable your location</button>
             or enter your city manually.
-          </p>
+          </p>}
       </div>
       <div>
-          <CitySearchInput onSelectCity={handleCitySelect} />
+          <CitySearchInput />
       </div>
       
       {error && <p className="error">{error}</p>}

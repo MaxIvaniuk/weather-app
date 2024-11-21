@@ -20,13 +20,11 @@ export default function Home() {
         { city &&
           <Wrapper>
             <CurrentWeather/>
+            {/* <p>{city}</p> */}
           </Wrapper>
         }
 
       </main>
-      <footer className={styles.footer}>
-        <p>By Max Ivaniuk</p>
-      </footer>
     </div>
   );
 }

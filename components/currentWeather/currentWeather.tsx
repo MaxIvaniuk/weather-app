@@ -1,73 +1,37 @@
 'use client'
 import { useEffect, useState } from 'react';
 
-import { fetchWeather } from '@/lib/weatherService';
 import WeatherLocation from './weatherLocation';
 import styles from "./currentWeather.module.css";
-import CitySearchInput from '../locationInput';
 
-import { WeatherData, TCoordinates } from '@/types/types';
-
-
-
-
+import { fetchWeatherByCity } from '@/lib/weatherService';
+import { TWeatherData, TCoordinates } from '@/types/types';
+import { useLocation } from '@/context/LocationContext';
 
 export default function CurrentWeather() {
-  // const [location, setLocation] = useState<TCoordinates | null>(null)
-  // const [city, setCity] = useState<string | null>(null)
-  // const [weather, setWeather] = useState<WeatherData | null>(null);
-  // const [error, setError] = useState<string | null>(null);
+  const { city } = useLocation()
 
-  // useEffect(() => {
-  //   if ('geolocation' in navigator) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => {
-  //         setLocation({
-  //           latitude: position.coords.latitude,
-  //           longitude: position.coords.longitude,
-  //         });
-  //       },
-  //       (error) => {
-  //         console.error("Не вдалося отримати геолокацію:", error.message);
-  //         setError("Не вдалося отримати геолокацію");
-  //       }
-  //     );
-  //   } else {
-  //     console.error("Геолокація не підтримується вашим браузером");
-  //     setError("Геолокація не підтримується вашим браузером");
-  //   }
-  // }, []);
+  const [weather, setWeather] = useState<TWeatherData | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  // useEffect(() => {
-  //   if (location) {
-  //     fetchWeather(location.latitude!, location.longitude!, '')
-  //       .then((data) => {
-  //         setWeather(data);
-  //       })
-  //       .catch(() => {
-  //         setError('Не вдалося отримати дані про погоду');
-  //       });
-  //   }
-  // }, [location]);
+  useEffect(() => {
+    if (city.length > 1) {
+      try {
+        fetchWeatherByCity(city)
+          .then(data => {
+            setWeather(data)
+          })
+      } catch (err) {
+        setError(`Something went wrong: ${err}`)
+      }
+    }
+  }, [city])
 
-  // useEffect(() => {
-  //   if (city) {
-  //     fetchWeather('', '', city)
-  //       .then((data) => {
-  //         setWeather(data);
-  //       })
-  //       .catch(() => {
-  //         setError('Не вдалося отримати дані про погоду');
-  //       });
-  //   }
-  // }, [city]);
-
-  // if (error) return <p>{error}</p>;
-  // if (!weather) return <p>Завантаження...</p>;
+  if (error) return <p>{error}</p>;
+  if (!weather) return <p>Завантаження...</p>;
 
   return (
     <>
-      {/* <CitySearchInput onSelectCity={setCity}/> */}
       { weather &&
         <div className={styles.currentWeather_container}>
           <div className={styles.currentWeather_header}>
@@ -80,9 +44,7 @@ export default function CurrentWeather() {
           <p className={styles.currentWeather_temp}>{weather?.current.temp_c}<span>°</span></p>
           <p className={styles.currentWeather_condition}>{weather?.current.condition.text}</p>
         </div>
-
       }
     </>
-
   );
 };

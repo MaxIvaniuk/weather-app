@@ -32,7 +32,7 @@ export type LocationContextType = {
     clearLocation: () => void;
 }
 
-export interface WeatherData {
+export interface TWeatherData {
     location: {
       name: string;
       country: string;
